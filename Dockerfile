@@ -102,5 +102,7 @@ RUN archive="wasi-sdk-$WASI_SDK_VERSION.0-x86_64-linux.tar.gz" \
  && mv "/opt/wasi-sdk-$WASI_SDK_VERSION.0-x86_64-linux" /opt/wasi-sdk \
  && rm "/tmp/$archive"
 
+RUN install -d -o ci -g ci /opt/hostedtoolcache
+
 USER ci
 WORKDIR /home/ci
