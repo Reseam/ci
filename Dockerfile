@@ -110,7 +110,13 @@ RUN archive="just-$JUST_VERSION-x86_64-unknown-linux-musl.tar.gz" \
  && tar -xzf "/tmp/$archive" -C /usr/local/bin just \
  && rm "/tmp/$archive"
 
-RUN install -d -o ci -g ci /opt/hostedtoolcache
+RUN install -d -o ci -g ci /opt/hostedtoolcache /cache
+
+ENV CARGO_HOME=/cache/cargo \
+    CARGO_INCREMENTAL=0 \
+    GRADLE_USER_HOME=/cache/gradle \
+    BUN_INSTALL_CACHE_DIR=/cache/bun \
+    npm_config_cache=/cache/npm
 
 USER ci
 WORKDIR /home/ci
