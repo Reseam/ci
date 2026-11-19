@@ -36,10 +36,12 @@ ARG LLVM_MINGW_SHA256=bb7bb7654b33d5aa8712acb837c963b2e0c56352560c76105270a3268c
 ARG TEMURIN_WINDOWS_VERSION=21.0.8+9
 ARG WASI_SDK_VERSION=33
 ARG WASI_SDK_SHA256=0ba8b5bfaeb2adf3f29bab5841d76cf5318ab8e1642ea195f88baba1abd47bce
+ARG JUST_VERSION=1.59.0
+ARG JUST_SHA256=409044617b6f06517c1035e55ca38c8c856ff8b650e41bc2aa1ef82d5903a23e
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      ca-certificates curl git openssh-client sudo just zstd xz-utils unzip \
+      ca-certificates curl git openssh-client sudo zstd xz-utils unzip \
       build-essential cmake openjdk-17-jdk-headless openjdk-21-jdk-headless \
       fakeroot dpkg-dev rpm makepkg pacman-package-manager libarchive-tools nsis \
  && rm -rf /var/lib/apt/lists/* \
@@ -100,6 +102,12 @@ RUN archive="wasi-sdk-$WASI_SDK_VERSION.0-x86_64-linux.tar.gz" \
  && echo "$WASI_SDK_SHA256  /tmp/$archive" | sha256sum -c - \
  && tar -xzf "/tmp/$archive" -C /opt \
  && mv "/opt/wasi-sdk-$WASI_SDK_VERSION.0-x86_64-linux" /opt/wasi-sdk \
+ && rm "/tmp/$archive"
+
+RUN archive="just-$JUST_VERSION-x86_64-unknown-linux-musl.tar.gz" \
+ && curl -fsSL "https://github.com/casey/just/releases/download/$JUST_VERSION/$archive" -o "/tmp/$archive" \
+ && echo "$JUST_SHA256  /tmp/$archive" | sha256sum -c - \
+ && tar -xzf "/tmp/$archive" -C /usr/local/bin just \
  && rm "/tmp/$archive"
 
 RUN install -d -o ci -g ci /opt/hostedtoolcache
